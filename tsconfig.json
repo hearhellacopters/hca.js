@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "target": "es2017",
     "module": "ES2015",
-    "lib": ["ES2015", "DOM"],
+    "lib": ["ES2017", "WebWorker", "DOM"],
     "newLine": "lf",
     "strict": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true
   },
   "files" :[
-    "hca.ts"
-  ]
+    "src/index.ts"
+  ],
+  "include": ["src/**/*"]
 }

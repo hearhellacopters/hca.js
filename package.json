@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "hca.js",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": {
+    "import": "./hca.js"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "generate-standalone": "npm run build && node scripts/generate-standalone.mjs"
+  },
+  "devDependencies": {
+    "rollup": "^2.74.1",
+    "rollup-plugin-ts": "^2.0.7"
+  }
+}
