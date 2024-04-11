@@ -4,7 +4,7 @@ TypeScript port of [VGAudio](https://github.com/Thealexbarney/VGAudio)'s and [vg
 
 Some parts are ported from [HCADecoder](https://github.com/Nyagamon/HCADecoder.git)
 
-Decrypt & decode hca(2.0) file in browser.
+Decrypt & decode hca(2.0, 3.0) file in browser.
 
 # Functions
 
@@ -20,7 +20,7 @@ Decrypt & decode hca(2.0) file in browser.
 - [x] wave mode (8/16/24/32/float)
 - [x] loop
 - [x] volume
-- [ ] encode
+- [x] encode (must be PCM16 wav)
 - [x] encrypt
 - [ ] recode (ogg/aac/mp3/flac)
 - [ ] FFT/DCT/DCTM/IDCTM (?)
@@ -32,6 +32,8 @@ Decrypt & decode hca(2.0) file in browser.
 [hca.html](/hca.html)
 
 Standalone version (can be saved for offline use): [hca-standalone.html](/hca-standalone.html)
+
+Includes dst/ folder for Node or other use.
 
 # Raw APIs
 
@@ -46,6 +48,7 @@ Static methods can be directly called without creating an instance, like:
 ```JavaScript
 let decryptedHca = HCA.decrypt(hca, "defaultkey");
 let wav = HCA.decode(decryptedHca);
+let hca = HCA.encode(wav, "defaultkey");
 ```
 
 ### `HCA.decrypt(hca: Uint8Array, key1?: any, key2?: any, subkey?: any): Uint8Array`
@@ -132,6 +135,15 @@ Return decoded (Windows PCM) WAV of the input whole HCA file. **The input HCA mu
    |-----|-----|-----|
 
  - **Checksums will be verified in the process, and `Error` will be thrown on any mismatch.**
+
+### `HCA.encode(wav: Uint8Array, key1?: any, key2?: any, subkey?: any): Uint8Array`
+
+Return encoded HCA of the input whole wav file. **The input wav must be PCM16 at the moment, otherwise `Error` will be thrown.**
+
+ - `key1`, `key2`, `subkey` argument
+   if at least key1 is supplied, HCA will be encrypted after creation.
+
+ - **More options are possible down the line inculding different PCM formats, looping control and quality control.**
 
 ### `HCA.fixChecksum(hca: Uint8Array): Uint8Array`
 

@@ -10,8 +10,11 @@ import HCAInfo from "./VGAudio/Codecs/CriHca/HcaInfo";
 import HCACrc16 from "./VGAudio/Utilities/Crc16";
 import HCAWav from "./wav/HCAWav";
 import HCAPacking from "./VGAudio/Codecs/CriHca/CriHcaPacking";
-import HCABitReader from './VGAudio/Utilities/BitReader'
-
+import HCABitReader from './VGAudio/Utilities/BitReader';
+import HCAParameters from "./VGAudio/Codecs/CriHca/CriHcaParameters";
+import HCAWriter from "./VGAudio/Containers/Hca/HcaWriter";
+import wavReader from "./wav/wavReader";
+import HCAFormat from "./VGAudio/Formats/CriHca/CriHcaFormat";
 class HCA {
   constructor() {
   }
@@ -157,6 +160,28 @@ class HCA {
 
       if (bestIndex == -1 || bestScore / testedBlockCount < threshold) return; // cannot found valid key
       else return unmixedKeyList[bestIndex];
+  }
+  static encode(wav: Uint8Array, key1?: number, key2?: number, subkey?: number){
+    //source
+    //VGAAudio/Formats/CriHca/CriHcaFormat.cs
+    //https://github.com/Thealexbarney/VGAudio/blob/master/src/VGAudio/Formats/CriHca/CriHcaFormat.cs
+    const pcm16 = new wavReader(wav);
+    if(pcm16.wFormatTag != 1){
+      throw new Error("Can only create HCA from PCM16 wav");
+    }
+    const config = new HCAParameters(
+      pcm16.ChannelCount,
+      pcm16.SampleRate,
+      pcm16.SampleCount,
+      pcm16.LoopStart,
+      pcm16.LoopEnd
+    )
+    const format = HCAFormat.EncodeFromPcm16(pcm16, config);
+    const hca = new HCAWriter(key1,key2,subkey).SetupWriter(format);
+    if(key1 != undefined){
+      return this.encrypt(hca,key1,key2,subkey);
+    }
+    return hca;
   }
   static decode(hca: Uint8Array, mode = 32, loop = 0, volume = 1.0) {
     switch (mode) {

@@ -5,7 +5,138 @@ import { SamplesPerFrame } from "./CriHcaConstants";
 
 class HCAInfo {
   private rawHeader: Uint8Array;
-
+  get ChannelCount() {
+    return this.format.channelCount;
+  }
+  set ChannelCount(value:number){
+    this.format.channelCount = value;
+  }
+  get SampleCount(){
+    return this.sampleCount;
+  }
+  set SampleCount(value:number){
+    this.sampleCount = value;
+  }
+  get TrackCount(){
+    return this.compDec.TrackCount;
+  }
+  set TrackCount(value:number){
+    this.compDec.TrackCount = value;
+  }
+  get SampleRate(){
+    return this.format.samplingRate;
+  }
+  set SampleRate(value:number){
+    this.format.samplingRate = value;
+  }
+  set MinResolution(value:number){
+    this.compDec.MinResolution = value;
+  }
+  get MinResolution(){
+    return this.compDec.MinResolution;
+  }
+  set MaxResolution(value:number){
+    this.compDec.MaxResolution = value;
+  }
+  get MaxResolution(){
+    return this.compDec.MaxResolution;
+  }
+  get TotalBandCount(){
+    return this.compDec.TotalBandCount;
+  }
+  set TotalBandCount(value:number){
+    this.compDec.TotalBandCount = value;
+  }
+  get BaseBandCount(){
+    return this.compDec.BaseBandCount;
+  }
+  set BaseBandCount(value:number){
+    this.compDec.BaseBandCount = value;
+  }
+  get StereoBandCount(){
+    return this.compDec.StereoBandCount;
+  }
+  set StereoBandCount(value:number){
+    this.compDec.StereoBandCount = value;
+  }
+  get BandsPerHfrGroup(){
+    return this.compDec.BandsPerHfrGroup;
+  }
+  set BandsPerHfrGroup(value:number){
+    this.compDec.BandsPerHfrGroup = value;
+  }
+  get ChannelConfig(){
+    return this.compDec.ChannelConfig;
+  }
+  set ChannelConfig(value:number){
+    this.compDec.ChannelConfig = value;
+  }
+  get LoopStartFrame(){
+    return this.loop.start;
+  }
+  set LoopStartFrame(value:number){
+    this.loop.start = value;
+  }
+  get LoopEndFrame(){
+    return this.loop.end;
+  }
+  set LoopEndFrame(value:number){
+    this.loop.end = value;
+  }
+  get PreLoopSamples(){
+    return this.loop.droppedHeader;
+  }
+  set PreLoopSamples(value:number){
+    this.loop.droppedHeader = value;
+  }
+  get PostLoopSamples(){
+    return this.loop.droppedFooter
+  }
+  set PostLoopSamples(value:number){
+    this.loop.droppedFooter = value;
+  }
+  get FrameCount(){
+    return this.format.blockCount;
+  }
+  set FrameCount(value:number){
+    this.format.blockCount = value;
+  }
+  get AppendedSamples(){
+    return this.format.droppedFooter;
+  }
+  set AppendedSamples(value:number){
+    this.format.droppedFooter = value;
+  }
+  get LoopStartSample(){
+    return this.LoopStartFrame * 1024 + this.PreLoopSamples - this.InsertedSamples;
+  }
+  get HfrBandCount(){
+    return this.compDec.HfrBandCount;
+  }
+  set HfrBandCount(value:number){
+  this.compDec.HfrBandCount = value;
+  }
+  get LoopEndSample(){
+    return (this.LoopEndFrame + 1) * 1024 - this.PostLoopSamples - this.InsertedSamples;
+  }
+  get Volume(){
+    return this.rva;
+  }
+  set Volume(value:number){
+    this.rva = value;
+  }
+  set Comment(value:string){
+    this.comment = value;
+  }
+  get Comment(){
+    return this.comment;
+  }
+  Looping = false;
+  FrameSize = 0;
+  InsertedSamples = 0;
+  HeaderSize = 0;
+  CommentLength = 0;
+  EncryptionType = 0;
   version = "";
   versionMajor = 2;
   versionMinor = 0;
@@ -51,7 +182,7 @@ class HCAInfo {
   };
   UseAthCurve: boolean = false;
   cipher = 0;
-  rva = 0.0;
+  rva = 1;
   comment = "";
 
   // computed sample count/offsets
@@ -147,15 +278,15 @@ class HCAInfo {
       // parse data accordingly
       switch (sign) {
         case "fmt":
-          this.format.channelCount = p.getUint8(ftell + 4);
-          this.format.samplingRate = p.getUint32(ftell + 4) & 0x00ffffff;
-          this.format.blockCount = p.getUint32(ftell + 8);
-          this.format.droppedHeader = p.getUint16(ftell + 12);
-          this.format.droppedFooter = p.getUint16(ftell + 14);
+          this.format.channelCount = p.getUint8(ftell + 4); //ChannelCount
+          this.format.samplingRate = p.getUint32(ftell + 4) & 0x00ffffff; //SampleRate
+          this.format.blockCount = p.getUint32(ftell + 8); //FrameCount
+          this.format.droppedHeader = p.getUint16(ftell + 12); //InsertedSamples
+          this.format.droppedFooter = p.getUint16(ftell + 14); //AppendedSamples
           ftell += 16;
           break;
         case "comp":
-          this.blockSize = p.getUint16(ftell + 4);
+          this.blockSize = p.getUint16(ftell + 4); //FrameSize
           this.kbps = this.format.samplingRate * this.blockSize / 128000.0;
           this.compDec.MinResolution = p.getUint8(ftell + 6);
           this.compDec.MaxResolution = p.getUint8(ftell + 7);
@@ -170,7 +301,7 @@ class HCAInfo {
           ftell += 16;
           break;
         case "dec":
-          this.blockSize = p.getUint16(ftell + 4);
+          this.blockSize = p.getUint16(ftell + 4); //FrameSize
           this.kbps = this.format.samplingRate * this.blockSize / 128000.0;
           this.compDec.MinResolution = p.getUint8(ftell + 6);
           this.compDec.MaxResolution = p.getUint8(ftell + 7);
@@ -191,6 +322,8 @@ class HCAInfo {
           ftell += 12;
           break;
         case "vbr":
+          this.vbr.MaxBlockSize = p.getUint16(ftell + 4);
+          this.vbr.NoiseLevel = p.getInt16(ftell + 6);
           ftell += 8;
           break;
         case "ath":
@@ -198,6 +331,7 @@ class HCAInfo {
           ftell += 6;
           break;
         case "loop":
+          this.Looping = true;
           this.loop.start = p.getUint32(ftell + 4);
           this.loop.end = p.getUint32(ftell + 8);
           this.loop.droppedHeader = p.getUint16(ftell + 12);
@@ -209,12 +343,8 @@ class HCAInfo {
           ftell += 6;
           break;
         case "rva":
-          this.rva = p.getFloat32(ftell + 4);
+          this.rva = p.getFloat32(ftell + 4); //Volume
           ftell += 8;
-          break;
-        case "vbr":
-          this.vbr.MaxBlockSize = p.getUint16(ftell + 4);
-          this.vbr.NoiseLevel = p.getInt16(ftell + 6);
           break;
         case "comm":
           let len = p.getUint8(ftell + 4);
@@ -445,9 +575,26 @@ class HCAInfo {
     hca: Uint8Array,
     changeMask: boolean = false,
     encrypt: boolean = false,
+    skipMake = false,
   ) {
     // if changeMask == true, (un)mask the header sigs in-place
-    this.rawHeader = this.parseHeader(hca, changeMask, encrypt, {});
+    if(skipMake){
+      this.rawHeader = hca;
+    } else {
+      this.rawHeader = this.parseHeader(hca, changeMask, encrypt, {});
+    }
+  }
+  CalculateHfrValues(){
+    if (this.compDec.BandsPerHfrGroup <= 0) return;
+    this.compDec.HfrBandCount = this.compDec.TotalBandCount -
+      this.compDec.BaseBandCount - this.compDec.StereoBandCount;
+    this.HfrGroupCount = HCAUtilFunc.DivideByRoundUp(
+      this.compDec.HfrBandCount,
+      this.compDec.BandsPerHfrGroup,
+    );
+  }
+  GetClone(){
+    return Object.assign({}, this);
   }
 }
 

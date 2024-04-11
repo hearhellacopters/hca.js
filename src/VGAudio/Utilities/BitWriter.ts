@@ -21,6 +21,21 @@ class BitWriter {
     this.Write(0, bits);
   }
 
+  public Read(destinationArray: Uint8Array, index: number, len: number){
+    for (let i = 0; i < len; i++) {
+      destinationArray[i] = this.Buffer[index + i];
+    }
+    this.Position = (index+len)*8;
+  }
+
+  public WriteString(str: string){
+    const te = new TextEncoder();
+    const buf = te.encode(str);
+    for (let i = 0; i < buf.length; i++) {
+      this.Write(buf[i],8);
+    }
+  }
+
   public Write(value: number, bitCount: number): void {
     HCAUtilFunc.DebugAssert(bitCount >= 0 && bitCount <= 32);
 

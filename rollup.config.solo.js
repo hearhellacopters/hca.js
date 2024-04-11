@@ -3,8 +3,8 @@ import ts from "rollup-plugin-ts";
 
 /** @type {import("rollup").RollupOptions} */
 export default {
-  input: 'src/index.ts',
-  output: { file: 'hca.js' },
+  input: 'src/index_solo.ts',
+  output: { file: 'dst/hca.js' },
   plugins: [ts()],
 };
 
