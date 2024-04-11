@@ -35,6 +35,8 @@ Standalone version (can be saved for offline use): [hca-standalone.html](/hca-st
 
 Includes dst/ folder for Node or other use.
 
+### `npm i hca.js`
+
 # Raw APIs
 
 **Generally not recommended:** when called in the foreground main thread, raw APIs block the main thread for significant time (1000-1200ms for an 1.3MB HCA file being decrypted and decoded)
