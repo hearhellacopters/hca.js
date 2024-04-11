@@ -335,6 +335,7 @@ declare class HCAWorker {
     addHeader(hca: Uint8Array, sig: string, newData: Uint8Array): Promise<Uint8Array>;
     addCipherHeader(hca: Uint8Array, cipherType?: number): Promise<Uint8Array>;
     decode(hca: Uint8Array, mode?: number, loop?: number, volume?: number): Promise<Uint8Array>;
+    encode(hca: Uint8Array, key1: any, key2: any, subkey: any): Promise<Uint8Array>;
     loadHCAForPlaying(hca: URL | string | Uint8Array, key1?: any, key2?: any, subkey?: any): Promise<void>;
     pausePlaying(): Promise<void>;
     resumePlaying(): Promise<void>;

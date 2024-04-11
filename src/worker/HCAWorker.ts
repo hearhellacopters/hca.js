@@ -623,6 +623,14 @@ class HCAWorker {
   ): Promise<Uint8Array> {
     return await this.taskQueue.execCmd("decode", [hca, mode, loop, volume]);
   }
+  async encode(
+    hca: Uint8Array,
+    key1: any,
+    key2: any,
+    subkey: any,
+  ): Promise<Uint8Array> {
+    return await this.taskQueue.execCmd("encode", [hca, key1, key2, subkey]);
+  }
   async loadHCAForPlaying(hca: URL | string | Uint8Array, key1?: any, key2?: any, subkey?: any): Promise<void> {
     if (typeof hca === "string") {
         if (hca === "") throw new Error("empty URL");

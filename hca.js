@@ -4333,12 +4333,8 @@ class HCAFormat {
             }
             //all this above shouldn't be triggered
         }
-        //console.log("audio[0] = ", audio[0].length);
-        //console.log(Array.from(audio[0]).map(i2hex).join('-'));
         const builder = new HCAFormatBuilder(audio, encoder.Hca);
         const ret = builder.Build();
-        //console.log("ret.AudioData[0] = ", ret.AudioData[0].length);
-        //console.log(Array.from(ret.AudioData[0]).map(i2hex).join('-'));
         return ret;
     }
     GetChannelsInternal(channelRange) {
@@ -5473,6 +5469,8 @@ if (typeof document === "undefined") {
                     return HCAInfo.addCipherHeader.apply(HCAInfo, task.args);
                 case "decode":
                     return HCA.decode.apply(HCA, task.args);
+                case "encode":
+                    return HCA.encode.apply(HCA, task.args);
                 default:
                     throw new Error(`unknown cmd ${task.cmd}`);
             }
@@ -6063,6 +6061,9 @@ class HCAWorker {
     }
     async decode(hca, mode = 32, loop = 0, volume = 1.0) {
         return await this.taskQueue.execCmd("decode", [hca, mode, loop, volume]);
+    }
+    async encode(hca, key1, key2, subkey) {
+        return await this.taskQueue.execCmd("encode", [hca, key1, key2, subkey]);
     }
     async loadHCAForPlaying(hca, key1, key2, subkey) {
         if (typeof hca === "string") {

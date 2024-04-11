@@ -247,4 +247,4 @@ declare class HCA {
     static writeToPCM(frame: HCAFrame, mode?: number, volume?: number, writer?: Uint8Array, ftell?: number): Uint8Array;
     static fixChecksum(hca: Uint8Array): Uint8Array;
 }
-export { HCA, HCAInfo };
+export { HCA as default, HCAInfo };

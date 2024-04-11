@@ -4318,12 +4318,8 @@ class HCAFormat {
             }
             //all this above shouldn't be triggered
         }
-        //console.log("audio[0] = ", audio[0].length);
-        //console.log(Array.from(audio[0]).map(i2hex).join('-'));
         const builder = new HCAFormatBuilder(audio, encoder.Hca);
         const ret = builder.Build();
-        //console.log("ret.AudioData[0] = ", ret.AudioData[0].length);
-        //console.log(Array.from(ret.AudioData[0]).map(i2hex).join('-'));
         return ret;
     }
     GetChannelsInternal(channelRange) {
@@ -4708,4 +4704,4 @@ class HCA {
     }
 }
 
-export { HCA, HCAInfo };
+export { HCAInfo, HCA as default };

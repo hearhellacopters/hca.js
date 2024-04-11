@@ -324,6 +324,8 @@ if (typeof document === "undefined") {
             return HCAInfo.addCipherHeader.apply(HCAInfo, task.args);
           case "decode":
             return HCA.decode.apply(HCA, task.args);
+          case "encode":
+            return HCA.encode.apply(HCA, task.args);
           default:
             throw new Error(`unknown cmd ${task.cmd}`);
         }
