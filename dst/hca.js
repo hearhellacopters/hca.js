@@ -3277,7 +3277,6 @@ class HCAWriter {
     }
     WriteData(writer) {
         for (let i = 0; i < this.Hca.FrameCount; i++) {
-            console.log("this.AudioData[i]", this.AudioData[i]);
             writer.WriteStream(this.AudioData[i], 0, this.Hca.FrameSize);
         }
     }
