@@ -44,7 +44,6 @@ export default class HCAFormat{
             () => new Int16Array(SamplesPerFrame),
         );
    
-        //TODO Fix me
         //progress?.SetTotal(encoder.Hca.FrameCount);
 
         var audio: Uint8Array[] = Array.from(
@@ -64,31 +63,27 @@ export default class HCAFormat{
 
             var framesWritten = encoder.Encode(pcmBuffer, audio[frameNum]);
 
-            //all this below shouldn't be triggered
+
             if (framesWritten == 0)
             {
                 throw new Error("Encoder returned no audio. This should not happen.");
             }
-            //all this above shouldn't be triggered
 
             if (framesWritten > 0)
             {
                 frameNum++;
                 framesWritten--;
-                //TODO Fix me
                 //progress?.ReportAdd(1);
             }
             
-            //all this below shouldn't be triggered
             while (framesWritten > 0)
             {
                 audio[frameNum] = encoder.GetPendingFrame();
                 frameNum++;
                 framesWritten--;
-                //TODO Fix me
                 //progress?.ReportAdd(1);
             }
-            //all this above shouldn't be triggered
+
         };
         const builder = new HCAFormatBuilder(audio, encoder.Hca);
         const ret = builder.Build();

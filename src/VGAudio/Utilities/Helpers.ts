@@ -133,7 +133,7 @@ export function arrayClear(array: (Int8Array | Int16Array | Int32Array| Float64A
   }
 };
 
-export function printArray(array: (Int8Array | Int16Array | Uint16Array | Int32Array | Uint32Array | Float64Array)){
+export function printArray(array: (Int8Array | Uint8Array | Int16Array | Uint16Array | Int32Array | Uint32Array | Float64Array)){
   function i2hex(i:number) {
       return ('0' + i.toString(16)).slice(-2).toUpperCase();
   }

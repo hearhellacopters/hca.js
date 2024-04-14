@@ -1184,6 +1184,12 @@ class BitWriter {
         }
         this.Position = (index + len) * 8;
     }
+    WriteStream(src, startIndex, len) {
+        for (let i = 0; i < len; i++) {
+            this.Buffer[this.Position / 8] = src[startIndex + i];
+            this.Position += 8;
+        }
+    }
     WriteString(str) {
         const te = new TextEncoder();
         const buf = te.encode(str);
@@ -3271,10 +3277,8 @@ class HCAWriter {
     }
     WriteData(writer) {
         for (let i = 0; i < this.Hca.FrameCount; i++) {
-            for (let z = 0; z < this.AudioData[i].length; z++) { //this.Hca.FrameSize length
-                const element = this.AudioData[i][z];
-                writer.Write(element, 8);
-            }
+            console.log("this.AudioData[i]", this.AudioData[i]);
+            writer.WriteStream(this.AudioData[i], 0, this.Hca.FrameSize);
         }
     }
 }
@@ -3747,8 +3751,7 @@ class HCAEncoder {
         if (this.PendingFrameCount === 0) {
             throw new Error("There are no pending frames");
         }
-        //TODO fix me
-        return this.HcaOutputBuffer[this.PendingFrameCount];
+        return this.HcaOutputBuffer[this.PendingFrameCount - 1];
     }
     EncodePreAudio(pcm, hcaOut, framesOutput) {
         while (this.BufferPreSamples > SamplesPerFrame) {
@@ -4287,7 +4290,6 @@ class HCAFormat {
         const encoder = HCAEncoder.InitializeNew(config);
         const pcm = pcm16.Channels;
         var pcmBuffer = Array.from({ length: pcm16.ChannelCount }, () => new Int16Array(SamplesPerFrame));
-        //TODO Fix me
         //progress?.SetTotal(encoder.Hca.FrameCount);
         var audio = Array.from({ length: encoder.Hca.FrameCount }, () => new Uint8Array(encoder.FrameSize));
         var frameNum = 0;
@@ -4297,26 +4299,20 @@ class HCAFormat {
                 arrayCopy(pcm[c], SamplesPerFrame * i, pcmBuffer[c], 0, samplesToCopy);
             }
             var framesWritten = encoder.Encode(pcmBuffer, audio[frameNum]);
-            //all this below shouldn't be triggered
             if (framesWritten == 0) {
                 throw new Error("Encoder returned no audio. This should not happen.");
             }
-            //all this above shouldn't be triggered
             if (framesWritten > 0) {
                 frameNum++;
                 framesWritten--;
-                //TODO Fix me
                 //progress?.ReportAdd(1);
             }
-            //all this below shouldn't be triggered
             while (framesWritten > 0) {
                 audio[frameNum] = encoder.GetPendingFrame();
                 frameNum++;
                 framesWritten--;
-                //TODO Fix me
                 //progress?.ReportAdd(1);
             }
-            //all this above shouldn't be triggered
         }
         const builder = new HCAFormatBuilder(audio, encoder.Hca);
         const ret = builder.Build();

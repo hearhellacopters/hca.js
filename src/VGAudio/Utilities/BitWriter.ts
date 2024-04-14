@@ -28,6 +28,13 @@ class BitWriter {
     this.Position = (index+len)*8;
   }
 
+  public WriteStream(src:Uint8Array, startIndex:number, len: number){
+    for (let i = 0; i < len; i++) {
+      this.Buffer[this.Position/8] = src[startIndex+i];
+      this.Position+=8;
+    }
+  }
+
   public WriteString(str: string){
     const te = new TextEncoder();
     const buf = te.encode(str);

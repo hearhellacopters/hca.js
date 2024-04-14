@@ -132,8 +132,7 @@ export default class HCAEncoder {
             throw new Error("There are no pending frames");
         }
 
-        //TODO fix me
-        return this.HcaOutputBuffer[this.PendingFrameCount];
+        return this.HcaOutputBuffer[this.PendingFrameCount-1];
     }
 
     private EncodePreAudio(pcm: Int16Array[], hcaOut: Uint8Array, framesOutput: number): number {

@@ -2,6 +2,7 @@ import HCAInfo from "../../Codecs/CriHca/HcaInfo";
 import HCAFormat from "../../Formats/CriHca/CriHcaFormat";
 import BitWriter from "../../Utilities/BitWriter";
 import Crc16 from "../../Utilities/Crc16";
+import { printArray } from "../../Utilities/Helpers";
 
 export default class HCAWriter{
     Hca!: HCAInfo;
@@ -172,10 +173,7 @@ export default class HCAWriter{
     {
         for (let i = 0; i < this.Hca.FrameCount; i++)
         {
-            for (let z = 0; z < this.AudioData[i].length; z++) { //this.Hca.FrameSize length
-                const element = this.AudioData[i][z];
-                writer.Write(element, 8);
-            }
+            writer.WriteStream(this.AudioData[i], 0, this.Hca.FrameSize);
         }
     }
 }
