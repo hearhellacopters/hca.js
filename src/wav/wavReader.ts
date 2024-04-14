@@ -175,7 +175,7 @@ export default class wavReader{
 
                         var channelsData = Array.from({ length: this.ChannelCount }, () => new arrayType(this.numSamplesPerChanel));
     
-                        for (let i = 0; i <  this.numOfSamples / this.width; i++) {
+                        for (let i = 0; i <  this.numSamplesPerChanel; i++) {
                             for (let k = 0; k < this.ChannelCount; k++) {
                                 switch (this.width) {
                                     case 1:

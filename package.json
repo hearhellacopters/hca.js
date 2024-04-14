@@ -1,6 +1,6 @@
 {
   "name": "hca.js",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "license": "MIT",
   "module": "dst/hca.js",
   "main": "dst/hca.js",
@@ -14,6 +14,7 @@
   "scripts": {
     "build": "rollup -c",
     "build_solo": "rollup --config rollup.config.solo.js",
+    "build_all": "rollup -c && rollup --config rollup.config.solo.js",
     "generate-standalone": "npm run build && node scripts/generate-standalone.mjs"
   },
   "devDependencies": {
