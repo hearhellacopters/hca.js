@@ -9,11 +9,13 @@
     "dst"
   ],
   "exports": {
-    "import": "./dst/hca.js"
+    "import": "./dst/hca.js",
+    "require": "./dst/hca.cjs"
   },
   "scripts": {
     "build": "rollup -c",
     "build_solo": "rollup --config rollup.config.solo.js",
+    "build_solo_cjs": "rollup --config rollup.config.solo.common.js",
     "build_all": "rollup -c && rollup --config rollup.config.solo.js",
     "generate-standalone": "npm run build && node scripts/generate-standalone.mjs"
   },
